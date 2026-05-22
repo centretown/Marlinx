@@ -1,0 +1,740 @@
+38c38
+< #define CONFIGURATION_H_VERSION 02010206
+---
+> #define CONFIGURATION_H_VERSION 02010200
+49c49
+<  * Průša Calculator:    https://blog.prusa3d.com/calculator_3416/
+---
+>  * Průša Calculator:    https://blog.prusaprinters.org/calculator_3416/
+53c53
+<  *                      https://web.archive.org/web/20220907014303/sites.google.com/site/repraplogphase/calibration-of-your-reprap
+---
+>  *                      https://sites.google.com/site/repraplogphase/calibration-of-your-reprap
+55d54
+<  *                      https://teachingtechyt.github.io/calibration.html
+91c90
+<   #define MOTHERBOARD BOARD_RAMPS_14_EFB
+---
+>   #define MOTHERBOARD BOARD_BTT_SKR_MINI_E3_V2_0
+94,95d92
+< // @section serial
+< 
+104c101
+< #define SERIAL_PORT 0
+---
+> #define SERIAL_PORT 2
+117c114
+< #define BAUDRATE 250000
+---
+> #define BAUDRATE 115200
+164,166c161,163
+< #define X_DRIVER_TYPE  A4988
+< #define Y_DRIVER_TYPE  A4988
+< #define Z_DRIVER_TYPE  A4988
+---
+> #define X_DRIVER_TYPE  TMC2209
+> #define Y_DRIVER_TYPE  TMC2209
+> #define Z_DRIVER_TYPE  TMC2209
+178c175
+< #define E0_DRIVER_TYPE A4988
+---
+> #define E0_DRIVER_TYPE TMC2209
+247a245,262
+> // @section multi-material
+> 
+> /**
+>  * Multi-Material Unit
+>  * Set to one of these predefined models:
+>  *
+>  *   PRUSA_MMU1           : Průša MMU1 (The "multiplexer" version)
+>  *   PRUSA_MMU2           : Průša MMU2
+>  *   PRUSA_MMU2S          : Průša MMU2S (Requires MK3S extruder with motion sensor, EXTRUDERS = 5)
+>  *   EXTENDABLE_EMU_MMU2  : MMU with configurable number of filaments (ERCF, SMuFF or similar with Průša MMU2 compatible firmware)
+>  *   EXTENDABLE_EMU_MMU2S : MMUS with configurable number of filaments (ERCF, SMuFF or similar with Průša MMU2 compatible firmware)
+>  *
+>  * Requires NOZZLE_PARK_FEATURE to park print head in case MMU unit fails.
+>  * See additional options in Configuration_adv.h.
+>  * :["PRUSA_MMU1", "PRUSA_MMU2", "PRUSA_MMU2S", "EXTENDABLE_EMU_MMU2", "EXTENDABLE_EMU_MMU2S"]
+>  */
+> //#define MMU_MODEL PRUSA_MMU2
+> 
+263,264c278
+<   #define SWITCHING_NOZZLE_SERVO_ANGLES { 0, 90 }   // A pair of angles for { E0, E1 }.
+<                                                     // For Dual Servo use two pairs: { { lower, raise }, { lower, raise } }
+---
+>   #define SWITCHING_NOZZLE_SERVO_ANGLES { 0, 90 }   // Angles for E0, E1 (single servo) or lowered/raised (dual servo)
+382,399d395
+< // @section multi-material
+< 
+< /**
+<  * Multi-Material Unit
+<  * Set to one of these predefined models:
+<  *
+<  *   PRUSA_MMU1           : Průša MMU1 (The "multiplexer" version)
+<  *   PRUSA_MMU2           : Průša MMU2
+<  *   PRUSA_MMU2S          : Průša MMU2S (Requires MK3S extruder with motion sensor, EXTRUDERS = 5)
+<  *   EXTENDABLE_EMU_MMU2  : MMU with configurable number of filaments (ERCF, SMuFF or similar with Průša MMU2 compatible firmware)
+<  *   EXTENDABLE_EMU_MMU2S : MMUS with configurable number of filaments (ERCF, SMuFF or similar with Průša MMU2 compatible firmware)
+<  *
+<  * Requires NOZZLE_PARK_FEATURE to park print head in case MMU unit fails.
+<  * See additional options in Configuration_adv.h.
+<  * :["PRUSA_MMU1", "PRUSA_MMU2", "PRUSA_MMU2S", "EXTENDABLE_EMU_MMU2", "EXTENDABLE_EMU_MMU2S"]
+<  */
+< //#define MMU_MODEL PRUSA_MMU2
+< 
+429,433c425,429
+<     #define AUTO_POWER_FANS           // Turn on PSU for fans
+<     #define AUTO_POWER_E_FANS         // Turn on PSU for E Fans
+<     #define AUTO_POWER_CONTROLLERFAN  // Turn on PSU for Controller Fan
+<     #define AUTO_POWER_CHAMBER_FAN    // Turn on PSU for Chamber Fan
+<     #define AUTO_POWER_COOLER_FAN     // Turn on PSU for Cooler Fan
+---
+>     #define AUTO_POWER_FANS         // Turn on PSU if fans need power
+>     #define AUTO_POWER_E_FANS
+>     #define AUTO_POWER_CONTROLLERFAN
+>     #define AUTO_POWER_CHAMBER_FAN
+>     #define AUTO_POWER_COOLER_FAN
+450c446
+<  * Temperature Sensors:
+---
+>  * --NORMAL IS 4.7kΩ PULLUP!-- 1kΩ pullup can be used on hotend sensor, using correct resistor and table
+452c448,465
+<  * NORMAL IS 4.7kΩ PULLUP! Hotend sensors can use 1kΩ pullup with correct resistor and table.
+---
+>  * Temperature sensors available:
+>  *
+>  *  SPI RTD/Thermocouple Boards - IMPORTANT: Read the NOTE below!
+>  *  -------
+>  *    -5 : MAX31865 with Pt100/Pt1000, 2, 3, or 4-wire  (only for sensors 0-1)
+>  *                  NOTE: You must uncomment/set the MAX31865_*_OHMS_n defines below.
+>  *    -3 : MAX31855 with Thermocouple, -200°C to +700°C (only for sensors 0-1)
+>  *    -2 : MAX6675  with Thermocouple, 0°C to +700°C    (only for sensors 0-1)
+>  *
+>  *  NOTE: Ensure TEMP_n_CS_PIN is set in your pins file for each TEMP_SENSOR_n using an SPI Thermocouple. By default,
+>  *        Hardware SPI on the default serial bus is used. If you have also set TEMP_n_SCK_PIN and TEMP_n_MISO_PIN,
+>  *        Software SPI will be used on those ports instead. You can force Hardware SPI on the default bus in the
+>  *        Configuration_adv.h file. At this time, separate Hardware SPI buses for sensors are not supported.
+>  *
+>  *  Analog Themocouple Boards
+>  *  -------
+>  *    -4 : AD8495 with Thermocouple
+>  *    -1 : AD595  with Thermocouple
+454d466
+<  * ================================================================
+456,504c468,510
+<  * ================================================================
+<  *     1 : 100kΩ EPCOS - Best choice for EPCOS thermistors
+<  *   331 : 100kΩ Same as #1, but 3.3V scaled for MEGA
+<  *   332 : 100kΩ Same as #1, but 3.3V scaled for DUE
+<  *     2 : 200kΩ ATC Semitec 204GT-2
+<  *   202 : 200kΩ Copymaster 3D
+<  *     3 : ???Ω  Mendel-parts thermistor
+<  *     4 : 10kΩ  Generic Thermistor !! DO NOT use for a hotend - it gives bad resolution at high temp. !!
+<  *     5 : 100kΩ ATC Semitec 104GT-2/104NT-4-R025H42G - Used in ParCan, J-Head, and E3D, SliceEngineering 300°C
+<  *   501 : 100kΩ Zonestar - Tronxy X3A
+<  *   502 : 100kΩ Zonestar - used by hot bed in Zonestar Průša P802M
+<  *   503 : 100kΩ Zonestar (Z8XM2) Heated Bed thermistor
+<  *   504 : 100kΩ Zonestar P802QR2 (Part# QWG-104F-B3950) Hotend Thermistor
+<  *   505 : 100kΩ Zonestar P802QR2 (Part# QWG-104F-3950) Bed Thermistor
+<  *   512 : 100kΩ RPW-Ultra hotend
+<  *     6 : 100kΩ EPCOS - Not as accurate as table #1 (created using a fluke thermocouple)
+<  *     7 : 100kΩ Honeywell 135-104LAG-J01
+<  *    71 : 100kΩ Honeywell 135-104LAF-J01
+<  *     8 : 100kΩ Vishay 0603 SMD NTCS0603E3104FXT
+<  *     9 : 100kΩ GE Sensing AL03006-58.2K-97-G1
+<  *    10 : 100kΩ RS PRO 198-961
+<  *    11 : 100kΩ Keenovo AC silicone mats, most Wanhao i3 machines - beta 3950, 1%
+<  *    12 : 100kΩ Vishay 0603 SMD NTCS0603E3104FXT (#8) - calibrated for Makibox hot bed
+<  *    13 : 100kΩ Hisens up to 300°C - for "Simple ONE" & "All In ONE" hotend - beta 3950, 1%
+<  *    14 : 100kΩ  (R25), 4092K (beta25), 4.7kΩ pull-up, bed thermistor as used in Ender-5 S1
+<  *    15 : 100kΩ Calibrated for JGAurora A5 hotend
+<  *    17 : 100kΩ Dagoma NTC white thermistor
+<  *    18 : 200kΩ ATC Semitec 204GT-2 Dagoma.Fr - MKS_Base_DKU001327
+<  *    22 : 100kΩ GTM32 Pro vB - hotend - 4.7kΩ pullup to 3.3V and 220Ω to analog input
+<  *    23 : 100kΩ GTM32 Pro vB - bed - 4.7kΩ pullup to 3.3v and 220Ω to analog input
+<  *    30 : 100kΩ Kis3d Silicone heating mat 200W/300W with 6mm precision cast plate (EN AW 5083) NTC100K - beta 3950
+<  *    60 : 100kΩ Maker's Tool Works Kapton Bed Thermistor - beta 3950
+<  *    61 : 100kΩ Formbot/Vivedino 350°C Thermistor - beta 3950
+<  *    66 : 4.7MΩ Dyze Design / Trianglelab T-D500 500°C High Temperature Thermistor
+<  *    67 : 500kΩ SliceEngineering 450°C Thermistor
+<  *    68 : PT100 Smplifier board from Dyze Design
+<  *    70 : 100kΩ bq Hephestos 2
+<  *    75 : 100kΩ Generic Silicon Heat Pad with NTC100K MGB18-104F39050L32
+<  *   666 : 200kΩ Einstart S custom thermistor with 10k pullup.
+<  *  2000 : 100kΩ Ultimachine Rambo TDK NTCG104LH104KT1 NTC100K motherboard Thermistor
+<  *
+<  * ================================================================
+<  *  Analog Thermistors - 1kΩ pullup
+<  *   Atypical, and requires changing out the 4.7kΩ pullup for 1kΩ.
+<  *   (but gives greater accuracy and more stable PID)
+<  * ================================================================
+<  *    51 : 100kΩ EPCOS (1kΩ pullup)
+<  *    52 : 200kΩ ATC Semitec 204GT-2 (1kΩ pullup)
+<  *    55 : 100kΩ ATC Semitec 104GT-2 - Used in ParCan & J-Head (1kΩ pullup)
+---
+>  *  -------
+>  *     1 : 100kΩ  EPCOS - Best choice for EPCOS thermistors
+>  *   331 : 100kΩ  Same as #1, but 3.3V scaled for MEGA
+>  *   332 : 100kΩ  Same as #1, but 3.3V scaled for DUE
+>  *     2 : 200kΩ  ATC Semitec 204GT-2
+>  *   202 : 200kΩ  Copymaster 3D
+>  *     3 : ???Ω   Mendel-parts thermistor
+>  *     4 : 10kΩ   Generic Thermistor !! DO NOT use for a hotend - it gives bad resolution at high temp. !!
+>  *     5 : 100kΩ  ATC Semitec 104GT-2/104NT-4-R025H42G - Used in ParCan, J-Head, and E3D, SliceEngineering 300°C
+>  *   501 : 100kΩ  Zonestar - Tronxy X3A
+>  *   502 : 100kΩ  Zonestar - used by hot bed in Zonestar Průša P802M
+>  *   503 : 100kΩ  Zonestar (Z8XM2) Heated Bed thermistor
+>  *   504 : 100kΩ  Zonestar P802QR2 (Part# QWG-104F-B3950) Hotend Thermistor
+>  *   505 : 100kΩ  Zonestar P802QR2 (Part# QWG-104F-3950) Bed Thermistor
+>  *   512 : 100kΩ  RPW-Ultra hotend
+>  *     6 : 100kΩ  EPCOS - Not as accurate as table #1 (created using a fluke thermocouple)
+>  *     7 : 100kΩ  Honeywell 135-104LAG-J01
+>  *    71 : 100kΩ  Honeywell 135-104LAF-J01
+>  *     8 : 100kΩ  Vishay 0603 SMD NTCS0603E3104FXT
+>  *     9 : 100kΩ  GE Sensing AL03006-58.2K-97-G1
+>  *    10 : 100kΩ  RS PRO 198-961
+>  *    11 : 100kΩ  Keenovo AC silicone mats, most Wanhao i3 machines - beta 3950, 1%
+>  *    12 : 100kΩ  Vishay 0603 SMD NTCS0603E3104FXT (#8) - calibrated for Makibox hot bed
+>  *    13 : 100kΩ  Hisens up to 300°C - for "Simple ONE" & "All In ONE" hotend - beta 3950, 1%
+>  *    15 : 100kΩ  Calibrated for JGAurora A5 hotend
+>  *    18 : 200kΩ  ATC Semitec 204GT-2 Dagoma.Fr - MKS_Base_DKU001327
+>  *    22 : 100kΩ  GTM32 Pro vB - hotend - 4.7kΩ pullup to 3.3V and 220Ω to analog input
+>  *    23 : 100kΩ  GTM32 Pro vB - bed - 4.7kΩ pullup to 3.3v and 220Ω to analog input
+>  *    30 : 100kΩ  Kis3d Silicone heating mat 200W/300W with 6mm precision cast plate (EN AW 5083) NTC100K - beta 3950
+>  *    60 : 100kΩ  Maker's Tool Works Kapton Bed Thermistor - beta 3950
+>  *    61 : 100kΩ  Formbot/Vivedino 350°C Thermistor - beta 3950
+>  *    66 : 4.7MΩ  Dyze Design / Trianglelab T-D500 500°C High Temperature Thermistor
+>  *    67 : 500kΩ  SliceEngineering 450°C Thermistor
+>  *    68 : PT100 amplifier board from Dyze Design
+>  *    70 : 100kΩ  bq Hephestos 2
+>  *    75 : 100kΩ  Generic Silicon Heat Pad with NTC100K MGB18-104F39050L32
+>  *  2000 : 100kΩ  Ultimachine Rambo TDK NTCG104LH104KT1 NTC100K motherboard Thermistor
+>  *
+>  *  Analog Thermistors - 1kΩ pullup - Atypical, and requires changing out the 4.7kΩ pullup for 1kΩ.
+>  *  -------                           (but gives greater accuracy and more stable PID)
+>  *    51 : 100kΩ  EPCOS (1kΩ pullup)
+>  *    52 : 200kΩ  ATC Semitec 204GT-2 (1kΩ pullup)
+>  *    55 : 100kΩ  ATC Semitec 104GT-2 - Used in ParCan & J-Head (1kΩ pullup)
+506d511
+<  * ================================================================
+508,509c513,514
+<  * ================================================================
+<  *    99 : 100kΩ Found on some Wanhao i3 machines with a 10kΩ pull-up resistor
+---
+>  *  -------
+>  *    99 : 100kΩ  Found on some Wanhao i3 machines with a 10kΩ pull-up resistor
+511d515
+<  * ================================================================
+513c517
+<  * ================================================================
+---
+>  *  -------
+525,544d528
+<  * ================================================================
+<  *  SPI RTD/Thermocouple Boards
+<  * ================================================================
+<  *    -5 : MAX31865 with Pt100/Pt1000, 2, 3, or 4-wire  (only for sensors 0-2 and bed)
+<  *                  NOTE: You must uncomment/set the MAX31865_*_OHMS_n defines below.
+<  *    -3 : MAX31855 with Thermocouple, -200°C to +700°C (only for sensors 0-2 and bed)
+<  *    -2 : MAX6675  with Thermocouple, 0°C to +700°C    (only for sensors 0-2 and bed)
+<  *
+<  *  NOTE: Ensure TEMP_n_CS_PIN is set in your pins file for each TEMP_SENSOR_n using an SPI Thermocouple. By default,
+<  *        Hardware SPI on the default serial bus is used. If you have also set TEMP_n_SCK_PIN and TEMP_n_MISO_PIN,
+<  *        Software SPI will be used on those ports instead. You can force Hardware SPI on the default bus in the
+<  *        Configuration_adv.h file. At this time, separate Hardware SPI buses for sensors are not supported.
+<  *
+<  * ================================================================
+<  *  Analog Thermocouple Boards
+<  * ================================================================
+<  *    -4 : AD8495 with Thermocouple
+<  *    -1 : AD595  with Thermocouple
+<  *
+<  * ================================================================
+546c530
+<  * ================================================================
+---
+>  *  ------
+552a537
+>  *
+562c547
+< #define TEMP_SENSOR_BED 1
+---
+> #define TEMP_SENSOR_BED 0
+664,675c649,656
+< /**
+<  * Temperature Control
+<  *
+<  *  (NONE) : Bang-bang heating
+<  * PIDTEMP : PID temperature control (~4.1K)
+<  * MPCTEMP : Predictive Model temperature control. (~1.8K without auto-tune)
+<  */
+< #define PIDTEMP           // See the PID Tuning Guide at https://reprap.org/wiki/PID_Tuning
+< //#define MPCTEMP         // See https://marlinfw.org/docs/features/model_predictive_control.html
+< 
+< #define PID_MAX  255      // Limit hotend current while PID is active (see PID_FUNCTIONAL_RANGE below); 255=full current
+< #define PID_K1     0.95   // Smoothing factor within any PID loop
+---
+> // Enable PIDTEMP for PID control or MPCTEMP for Predictive Model.
+> // temperature control. Disable both for bang-bang heating.
+> #define PIDTEMP          // See the PID Tuning Guide at https://reprap.org/wiki/PID_Tuning
+> //#define MPCTEMP        // ** EXPERIMENTAL **
+> 
+> #define BANG_MAX 255     // Limits current to nozzle while in bang-bang mode; 255=full current
+> #define PID_MAX BANG_MAX // Limits current to nozzle while PID is active (see PID_FUNCTIONAL_RANGE below); 255=full current
+> #define PID_K1 0.95      // Smoothing factor within any PID loop
+685,687c666,668
+<     #define DEFAULT_KP_LIST {  22.20,  22.20 }
+<     #define DEFAULT_KI_LIST {   1.08,   1.08 }
+<     #define DEFAULT_KD_LIST { 114.00, 114.00 }
+---
+>     #define DEFAULT_Kp_LIST {  22.20,  22.20 }
+>     #define DEFAULT_Ki_LIST {   1.08,   1.08 }
+>     #define DEFAULT_Kd_LIST { 114.00, 114.00 }
+689,691c670,672
+<     #define DEFAULT_KP  22.20
+<     #define DEFAULT_KI   1.08
+<     #define DEFAULT_KD 114.00
+---
+>     #define DEFAULT_Kp  22.20
+>     #define DEFAULT_Ki   1.08
+>     #define DEFAULT_Kd 114.00
+693,694d673
+< #else
+<   #define BANG_MAX 255    // Limit hotend current while in bang-bang mode; 255=full current
+700,702c679,681
+<  * Use a physical model of the hotend to control temperature. When configured correctly this gives
+<  * better responsiveness and stability than PID and removes the need for PID_EXTRUSION_SCALING
+<  * and PID_FAN_SCALING. Use M306 T to autotune the model.
+---
+>  * Use a physical model of the hotend to control temperature. When configured correctly
+>  * this gives better responsiveness and stability than PID and it also removes the need
+>  * for PID_EXTRUSION_SCALING and PID_FAN_SCALING. Use M306 T to autotune the model.
+706c685
+<   //#define MPC_EDIT_MENU                             // Add MPC editing to the "Advanced Settings" menu. (~1.3K bytes of flash)
+---
+>   //#define MPC_EDIT_MENU                             // Add MPC editing to the "Advanced Settings" menu. (~1300 bytes of flash)
+709c688
+<   #define MPC_MAX 255                                 // (0..255) Current to nozzle while MPC is active.
+---
+>   #define MPC_MAX BANG_MAX                            // (0..255) Current to nozzle while MPC is active.
+728,729d706
+<   // Filament Heat Capacity (joules/kelvin/mm)
+<   // Set at runtime with M306 H<value>
+731,733c708
+<                                                       // 0.0036 J/K/mm for 1.75mm PETG (0.0094 J/K/mm for 2.85mm PETG).
+<                                                       // 0.00515 J/K/mm for 1.75mm ABS (0.0137 J/K/mm for 2.85mm ABS).
+<                                                       // 0.00522 J/K/mm for 1.75mm Nylon (0.0138 J/K/mm for 2.85mm Nylon).
+---
+>   //#define FILAMENT_HEAT_CAPACITY_PERMM { 3.6e-3f }  // 0.0036 J/K/mm for 1.75mm PETG (0.0094 J/K/mm for 2.85mm PETG).
+748,757d722
+< // @section bed temp
+< 
+< /**
+<  * Max Bed Power
+<  * Applies to all forms of bed control (PID, bang-bang, and bang-bang with hysteresis).
+<  * When set to any value below 255, enables a form of PWM to the bed that acts like a divider
+<  * so don't use it unless you are OK with PWM on your bed. (See the comment on enabling PIDTEMPBED)
+<  */
+< #define MAX_BED_POWER 255 // limits duty cycle to bed; 255=full current
+< 
+760a726,728
+>  * If this option is enabled set PID constants below.
+>  * If this option is disabled, bang-bang will be used and BED_LIMIT_SWITCHING will enable hysteresis.
+>  *
+767,768c735
+<  *
+<  * With this option disabled, bang-bang will be used. BED_LIMIT_SWITCHING enables hysteresis.
+---
+>  * @section bed temp
+771a739,748
+> //#define BED_LIMIT_SWITCHING
+> 
+> /**
+>  * Max Bed Power
+>  * Applies to all forms of bed control (PID, bang-bang, and bang-bang with hysteresis).
+>  * When set to any value below 255, enables a form of PWM to the bed that acts like a divider
+>  * so don't use it unless you are OK with PWM on your bed. (See the comment on enabling PIDTEMPBED)
+>  */
+> #define MAX_BED_POWER 255 // limits duty cycle to bed; 255=full current
+> 
+778,780c755,757
+<   #define DEFAULT_BED_KP 10.00
+<   #define DEFAULT_BED_KI .023
+<   #define DEFAULT_BED_KD 305.4
+---
+>   #define DEFAULT_bedKp 10.00
+>   #define DEFAULT_bedKi .023
+>   #define DEFAULT_bedKd 305.4
+783,785c760
+< #else
+<   //#define BED_LIMIT_SWITCHING   // Keep the bed temperature within BED_HYSTERESIS of the target
+< #endif
+---
+> #endif // PIDTEMPBED
+824,826c799,801
+<   #define DEFAULT_CHAMBER_KP  37.04
+<   #define DEFAULT_CHAMBER_KI   1.40
+<   #define DEFAULT_CHAMBER_KD 655.17
+---
+>   #define DEFAULT_chamberKp 37.04
+>   #define DEFAULT_chamberKi 1.40
+>   #define DEFAULT_chamberKd 655.17
+832,833d806
+< // @section pid temp
+< 
+889c862
+< // @section kinematics
+---
+> // @section machine
+899,904c872
+< 
+< //
+< // MarkForged Kinematics
+< // See https://reprap.org/forum/read.php?152,504042
+< //
+< //#define MARKFORGED_XY
+---
+> //#define MARKFORGED_XY  // MarkForged. See https://reprap.org/forum/read.php?152,504042
+913,914c881,882
+<   #define POLARGRAPH_MAX_BELT_LEN  1035.0 // (mm) Belt length at full extension. Override with M665 H.
+<   #define DEFAULT_SEGMENTS_PER_SECOND 5   // Move segmentation based on duration
+---
+>   #define POLARGRAPH_MAX_BELT_LEN 1035.0
+>   #define DEFAULT_SEGMENTS_PER_SECOND 5
+961c929
+<   #define DELTA_ENDSTOP_ADJ { 0.0, 0.0, 0.0 } // (mm) Get these values from G33 auto calibrate
+---
+>   #define DELTA_ENDSTOP_ADJ { 0.0, 0.0, 0.0 } // Get these values from G33 auto calibrate
+969c937
+<   #define DELTA_TOWER_ANGLE_TRIM { 0.0, 0.0, 0.0 } // (mm) Get these values from G33 auto calibrate
+---
+>   #define DELTA_TOWER_ANGLE_TRIM { 0.0, 0.0, 0.0 } // Get these values from G33 auto calibrate
+971,973c939,941
+<   // Delta radius and diagonal rod adjustments
+<   //#define DELTA_RADIUS_TRIM_TOWER       { 0.0, 0.0, 0.0 } // (mm)
+<   //#define DELTA_DIAGONAL_ROD_TRIM_TOWER { 0.0, 0.0, 0.0 } // (mm)
+---
+>   // Delta radius and diagonal rod adjustments (mm)
+>   //#define DELTA_RADIUS_TRIM_TOWER { 0.0, 0.0, 0.0 }
+>   //#define DELTA_DIAGONAL_ROD_TRIM_TOWER { 0.0, 0.0, 0.0 }
+1009,1010c977,978
+<     #define THETA_HOMING_OFFSET  0  // Calculated from Calibration Guide and M360 / M114. See https://www.morgan3dp.com/morgan-calibration-guide/
+<     #define PSI_HOMING_OFFSET    0  // Calculated from Calibration Guide and M364 / M114. See https://www.morgan3dp.com/morgan-calibration-guide/
+---
+>     #define THETA_HOMING_OFFSET  0  // Calculated from Calibration Guide and M360 / M114. See http://reprap.harleystudio.co.za/?page_id=1073
+>     #define PSI_HOMING_OFFSET    0  // Calculated from Calibration Guide and M364 / M114. See http://reprap.harleystudio.co.za/?page_id=1073
+1030,1031c998,999
+<   #define TPARA_LINKAGE_1 120     // (mm)
+<   #define TPARA_LINKAGE_2 120     // (mm)
+---
+>   #define TPARA_LINKAGE_1 120       // (mm)
+>   #define TPARA_LINKAGE_2 120       // (mm)
+1033,1037c1001,1005
+<   // TPARA tower offset (position of Tower relative to bed zero position)
+<   // This needs to be reasonably accurate as it defines the printbed position in the TPARA space.
+<   #define TPARA_OFFSET_X    0     // (mm)
+<   #define TPARA_OFFSET_Y    0     // (mm)
+<   #define TPARA_OFFSET_Z    0     // (mm)
+---
+>   // SCARA tower offset (position of Tower relative to bed zero position)
+>   // This needs to be reasonably accurate as it defines the printbed position in the SCARA space.
+>   #define TPARA_OFFSET_X    0       // (mm)
+>   #define TPARA_OFFSET_Y    0       // (mm)
+>   #define TPARA_OFFSET_Z    0       // (mm)
+1042a1011,1014
+> 
+>   // Calculated from Calibration Guide and M360 / M114. See http://reprap.harleystudio.co.za/?page_id=1073
+>   #define THETA_HOMING_OFFSET  0
+>   #define PSI_HOMING_OFFSET    0
+1313,1314c1285,1287
+<  * Override this pin only if the probe cannot be connected to
+<  * the default Z_MIN_PROBE_PIN for the selected MOTHERBOARD.
+---
+>  * Define this pin if the probe is not connected to Z_MIN_PIN.
+>  * If not defined the default pin for the selected MOTHERBOARD
+>  * will be used. Most of the time the default is what you want.
+1319,1321c1292,1295
+<  *  - For simple switches...
+<  *    - Normally-closed (NC) also connect to GND.
+<  *    - Normally-open (NO) also connect to 5V.
+---
+>  *  - RAMPS 1.3/1.4 boards may use the 5V, GND, and Aux4->D32 pin:
+>  *    - For simple switches connect...
+>  *      - normally-closed switches to GND and D32.
+>  *      - normally-open switches to 5V and D32.
+1323c1297
+< //#define Z_MIN_PROBE_PIN -1
+---
+> //#define Z_MIN_PROBE_PIN 32 // Pin 32 is the RAMPS default
+1354,1357c1328,1329
+< //#define Z_PROBE_SERVO_NR 0
+< #ifdef Z_PROBE_SERVO_NR
+<   //#define Z_SERVO_ANGLES { 70, 0 }      // Z Servo Deploy and Stow angles
+< #endif
+---
+> //#define Z_PROBE_SERVO_NR 0       // Defaults to SERVO 0 connector.
+> //#define Z_SERVO_ANGLES { 70, 0 } // Z Servo Deploy and Stow angles
+1362c1334
+< //#define BLTOUCH
+---
+> #define BLTOUCH
+1427c1399
+< // Duet Smart Effector (for delta printers) - https://docs.duet3d.com/en/Duet3D_hardware/Accessories/Smart_Effector
+---
+> // Duet Smart Effector (for delta printers) - https://bit.ly/2ul5U7J
+1443c1415
+<  * Allen key retractable z-probe as seen on many Kossel delta printers - https://reprap.org/wiki/Kossel#Autolevel_probe
+---
+>  * Allen key retractable z-probe as seen on many Kossel delta printers - https://reprap.org/wiki/Kossel#Automatic_bed_leveling_probe
+1490c1462
+<  * -  PROBE_OFFSET_WIZARD (Configuration_adv.h) can be used for setting the Z offset.
+---
+>  * -  PROBE_OFFSET_WIZARD (configuration_adv.h) can be used for setting the Z offset.
+1588,1589c1560,1561
+<  * Example: 'M851 Z-5' with a CLEARANCE of 4  =>  9mm from bed to nozzle.
+<  *     But: 'M851 Z+1' with a CLEARANCE of 2  =>  2mm from bed to nozzle.
+---
+>  * Example: `M851 Z-5` with a CLEARANCE of 4  =>  9mm from bed to nozzle.
+>  *     But: `M851 Z+1` with a CLEARANCE of 2  =>  2mm from bed to nozzle.
+1591,1594c1563,1566
+< #define Z_CLEARANCE_DEPLOY_PROBE   10 // (mm) Z Clearance for Deploy/Stow
+< #define Z_CLEARANCE_BETWEEN_PROBES  5 // (mm) Z Clearance between probe points
+< #define Z_CLEARANCE_MULTI_PROBE     5 // (mm) Z Clearance between multiple probes
+< //#define Z_AFTER_PROBING           5 // (mm) Z position after probing is done
+---
+> #define Z_CLEARANCE_DEPLOY_PROBE   10 // Z Clearance for Deploy/Stow
+> #define Z_CLEARANCE_BETWEEN_PROBES  5 // Z Clearance between probe points
+> #define Z_CLEARANCE_MULTI_PROBE     5 // Z Clearance between multiple probes
+> //#define Z_AFTER_PROBING           5 // Z position after probing is done
+1596c1568
+< #define Z_PROBE_LOW_POINT          -2 // (mm) Farthest distance below the trigger-point to go before stopping
+---
+> #define Z_PROBE_LOW_POINT          -2 // Farthest distance below the trigger-point to go before stopping
+1603c1575
+< //#define Z_MIN_PROBE_REPEATABILITY_TEST
+---
+> #define Z_MIN_PROBE_REPEATABILITY_TEST
+1635,1636d1606
+< // @section stepper drivers
+< 
+1652,1660c1622,1630
+< //#define DISABLE_X
+< //#define DISABLE_Y
+< //#define DISABLE_Z
+< //#define DISABLE_I
+< //#define DISABLE_J
+< //#define DISABLE_K
+< //#define DISABLE_U
+< //#define DISABLE_V
+< //#define DISABLE_W
+---
+> #define DISABLE_X false
+> #define DISABLE_Y false
+> #define DISABLE_Z false
+> //#define DISABLE_I false
+> //#define DISABLE_J false
+> //#define DISABLE_K false
+> //#define DISABLE_U false
+> //#define DISABLE_V false
+> //#define DISABLE_W false
+1667,1668c1637,1638
+< //#define DISABLE_E               // Disable the extruder when not stepping
+< #define DISABLE_OTHER_EXTRUDERS   // Keep only the active extruder enabled
+---
+> #define DISABLE_E false             // Disable the extruder when not stepping
+> #define DISABLE_INACTIVE_EXTRUDER   // Keep only the active extruder enabled
+1792,1793d1761
+<  * @section filament runout sensors
+<  *
+1913,1918d1880
+<  * Commands to execute at the end of G29 probing.
+<  * Useful to retract or move the Z probe out of the way.
+<  */
+< //#define Z_PROBE_END_SCRIPT "G1 Z10 F12000\nG1 X15 Y330\nG1 Z0.5\nG1 Z10"
+< 
+< /**
+1947c1909
+<  * NOTE: Requires a lot of flash!
+---
+>  * NOTE: Requires a lot of PROGMEM!
+1978c1940
+<   //#define G26_MESH_VALIDATION
+---
+>   #define G26_MESH_VALIDATION
+2007c1969
+<     // Subdivision of the grid by Catmull-Rom method.
+---
+>     // Experimental Subdivision of the grid by Catmull-Rom method.
+2071,2072c2033,2034
+<   #define BED_TRAMMING_HEIGHT      0.0        // (mm) Z height of nozzle at tramming points
+<   #define BED_TRAMMING_Z_HOP       4.0        // (mm) Z raise between tramming points
+---
+>   #define BED_TRAMMING_HEIGHT      0.0        // (mm) Z height of nozzle at leveling points
+>   #define BED_TRAMMING_Z_HOP       4.0        // (mm) Z height of nozzle between leveling points
+2100a2063,2068
+> /**
+>  * Commands to execute at the end of G29 probing.
+>  * Useful to retract or move the Z probe out of the way.
+>  */
+> //#define Z_PROBE_END_SCRIPT "G1 Z10 F12000\nG1 X15 Y330\nG1 Z0.5\nG1 Z10"
+> 
+2125c2093
+< //#define Z_SAFE_HOMING
+---
+> #define Z_SAFE_HOMING
+2128,2129c2096,2097
+<   #define Z_SAFE_HOMING_X_POINT X_CENTER  // (mm) X point for Z homing
+<   #define Z_SAFE_HOMING_Y_POINT Y_CENTER  // (mm) Y point for Z homing
+---
+>   #define Z_SAFE_HOMING_X_POINT X_CENTER  // X point for Z homing
+>   #define Z_SAFE_HOMING_Y_POINT Y_CENTER  // Y point for Z homing
+2211c2179
+< //#define EEPROM_SETTINGS     // Persistent storage with M500 and M501
+---
+> #define EEPROM_SETTINGS     // Persistent storage with M500 and M501
+2213c2181
+< #define EEPROM_CHITCHAT       // Give feedback on EEPROM commands. Disable to save flash.
+---
+> #define EEPROM_CHITCHAT       // Give feedback on EEPROM commands. Disable to save PROGMEM.
+2260a2229,2230
+> // @section motion
+> 
+2262,2263d2231
+<  * @section nozzle park
+<  *
+2274c2242
+< //#define NOZZLE_PARK_FEATURE
+---
+> #define NOZZLE_PARK_FEATURE
+2286,2288c2254
+<  * @section nozzle clean
+<  *
+<  * Clean Nozzle Feature
+---
+>  * Clean Nozzle Feature -- EXPERIMENTAL
+2321a2288
+>  * Attention: EXPERIMENTAL. G-code arguments may change.
+2436c2403
+<   //#define PASSWORD_ON_SD_PRINT_MENU       // This does not prevent G-codes from running
+---
+>   //#define PASSWORD_ON_SD_PRINT_MENU       // This does not prevent gcodes from running
+2497c2464
+< //#define SDSUPPORT
+---
+> #define SDSUPPORT
+2622c2589
+< // https://web.archive.org/web/20200719145306/doku.radds.org/dokumentation/lcd-display/
+---
+> // http://doku.radds.org/dokumentation/lcd-display/
+2651a2619
+> // http://www.inventapart.com/
+2688c2656
+< // https://web.archive.org/web/20140823033947/www.elefu.com/index.php?route=product/product&product_id=53
+---
+> // http://www.elefu.com/index.php?route=product/product&product_id=53
+2695,2697c2663,2664
+< // These require LiquidCrystal_I2C library:
+< //   https://github.com/MarlinFirmware/New-LiquidCrystal
+< //   https://github.com/fmalpartida/New-LiquidCrystal/wiki
+---
+> // These require F.Malpartida's LiquidCrystal_I2C library
+> // https://bitbucket.org/fmalpartida/new-liquidcrystal/wiki/Home
+2730c2697
+< // 2-wire Non-latching LCD SR from https://github.com/fmalpartida/New-LiquidCrystal/wiki/schematics#user-content-ShiftRegister_connection
+---
+> // 2-wire Non-latching LCD SR from https://goo.gl/aJJ4sH
+2747,2748c2714,2715
+< //#define TFTGLCD_PANEL_SPI
+< //#define TFTGLCD_PANEL_I2C
+---
+> // #define TFTGLCD_PANEL_SPI
+> // #define TFTGLCD_PANEL_I2C
+2802c2769
+< // https://reprap.org/wiki/MaKrPanel
+---
+> // https://reprap.org/wiki/MaKr3d_MaKrPanel
+2820c2787
+< // https://web.archive.org/web/20180605050442/mauk.cc/webshop/cartesio-shop/electronics/user-interface
+---
+> // http://mauk.cc/webshop/cartesio-shop/electronics/user-interface
+2864,2865c2831
+< // BigTreeTech Mini 12864 V1.0 / V2.0 is an alias for FYSETC_MINI_12864_2_1. Type A/B. NeoPixel RGB Backlight.
+< // https://github.com/bigtreetech/MINI-12864
+---
+> // BigTreeTech Mini 12864 V1.0 is an alias for FYSETC_MINI_12864_2_1. Type A/B. NeoPixel RGB Backlight.
+2867c2833
+< //#define BTT_MINI_12864
+---
+> //#define BTT_MINI_12864_V1
+2870,2871c2836,2837
+< // Factory display for Creality CR-10 / CR-7 / Ender-3
+< // https://marlinfw.org/docs/hardware/controllers.html#cr10_stockdisplay
+---
+> // Factory display for Creality CR-10
+> // https://www.aliexpress.com/item/32833148327.html
+2873c2839,2840
+< // Connect to EXP1 on RAMPS and compatible boards.
+---
+> // This is RAMPS-compatible using a single 10-pin connector.
+> // (For CR-10 owners who want to replace the Melzi Creality board but retain the display)
+2875c2842
+< //#define CR10_STOCKDISPLAY
+---
+> // #define CR10_STOCKDISPLAY
+2988d2954
+<  *  - Product: https://www.aliexpress.com/item/32993409517.html
+2993d2958
+<  *  - Product: https://www.aliexpress.com/item/32961471929.html
+3002d2966
+<  *  - Product: https://www.aliexpress.com/item/1005002008179262.html
+3005c2969
+<  *  - Download https://github.com/Neo2003/DGUS-reloaded/releases
+---
+>  *  - Download https://github.com/Desuuuu/DGUS-reloaded/releases
+3007,3012d2970
+<  *
+<  * Flash display with DGUS Displays for Marlin:
+<  *  - Format the SD card to FAT32 with an allocation size of 4kb.
+<  *  - Download files as specified for your type of display.
+<  *  - Plug the microSD card into the back of the display.
+<  *  - Boot the display and wait for the update to complete.
+3071d3028
+< // https://github.com/makerbase-mks/MKS-TFT-Hardware/tree/master/MKS%20TS35
+3133c3090
+< //#define ANET_ET5_TFT35
+---
+> // #define ANET_ET5_TFT35
+3136,3137c3093
+< // 1024x600, 7", RGB Stock Display with Rotary Encoder from BIQU BX
+< // https://github.com/bigtreetech/BIQU-BX/tree/master/Hardware
+---
+> // 1024x600, 7", RGB Stock Display with Rotary Encoder from BIQU-BX
+3143d3098
+< // https://github.com/bigtreetech/TFT35-SPI/tree/master/v1
+3145c3100,3101
+< //#define BTT_TFT35_SPI_V1_0
+---
+> // #define BTT_TFT35_SPI_V1_0
+> 
+3176,3177c3132,3133
+< //#define TFT_CLASSIC_UI
+< //#define TFT_COLOR_UI
+---
+> #define TFT_CLASSIC_UI
+> // #define TFT_COLOR_UI
+3181c3137
+<   //#define TFT_SHARED_IO    // SPI is shared between TFT display and other devices. Disable async data transfer
+---
+>   //#define TFT_SHARED_SPI   // SPI is shared between TFT display and other devices. Disable async data transfer
+3185c3141
+<   //#define MKS_WIFI_MODULE // MKS WiFi module
+---
+>   //#define MKS_WIFI_MODULE  // MKS WiFi module
+3332,3334d3287
+< #endif
+< 
+< #if ANY(RGB_LED, RGBW_LED, PCA9632)
+3368c3321
+<   //#define NEOPIXEL_BKGD_COLOR         { 255, 255, 255, 0 }  // R, G, B, W
+---
+>   //#define NEOPIXEL_BKGD_COLOR { 255, 255, 255, 0 }  // R, G, B, W
